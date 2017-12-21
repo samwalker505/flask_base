@@ -1,12 +1,27 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from . import app
-from utils.errors import InvalidType
-from models.user import User
+from . import app, json
 
 
-@app.route('/')
-def get_foo():
-    User(email=5678)
-    raise InvalidType('This view is gone', status_code=410)
+@app.route('/', methods=['GET'])
+@json
+def get_():
+    return {}
+
+
+@app.route('/', methods=['POST'])
+@json
+def post_():
+    return {}
+
+
+@app.route('/', methods=['PUT'])
+@json
+def put_():
+    return {}
+
+
+@app.route('/', methods=['DELETE'])
+@json
+def delete_():
+    return {}
