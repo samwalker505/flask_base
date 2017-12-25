@@ -1,11 +1,21 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import json
 from google.appengine.ext import ndb
 from models import BaseModel
 from utils import properties, errors
 
-import json
+
+class UserRolesProperty(ndb.StringProperty):
+
+    NORMAL = 'normal'
+    ADMIN = 'admin'
+
+    values = [NORMAL, ADMIN]
+
+    def _validate(self, value):
+        if value not in self.values:
+            raise errors.InvalidType(self.__class__.__name__)
 
 
 class FacebookSSOMixin(object):
@@ -20,6 +30,9 @@ class FacebookSSOMixin(object):
             fb_result['fb_id'] = fb_result['id']
             user = cls.create_or_connect(**fb_result)
             return user
+        else:
+            error = json.loads(result.content)['error']
+            raise errors.ApiError(error['message'], payload={'facebook_response': error})
 
     @classmethod
     def create_or_connect(cls, email=None, fb_id=None, name=None, **kwargs):
@@ -34,6 +47,8 @@ class FacebookSSOMixin(object):
         user.email = email
         user.name = name
         user.fb_id = fb_id
+        if not user.roles:
+            user.roles = [UserRolesProperty.NORMAL]
 
         user_key = user.put()
         if not email_log.user_key:
@@ -47,6 +62,16 @@ class User(FacebookSSOMixin, BaseModel):
     email = properties.EmailProperty()
     name = ndb.StringProperty()
     fb_id = ndb.StringProperty()
+    blocked = ndb.BooleanProperty(default=False)
+    roles = UserRolesProperty(repeated=True)
+    PUBLIC_EXCLUDE = ['blocked']
+
+    @property
+    def is_admin(self):
+        import logging
+        logging.debug(self.roles)
+        logging.debug(UserRolesProperty.ADMIN in self.roles)
+        return UserRolesProperty.ADMIN in self.roles
 
 
 class Email(ndb.Model):
