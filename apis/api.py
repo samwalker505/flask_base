@@ -1,9 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 from webargs import fields
 from webargs.flaskparser import use_args
 from flask import Blueprint
 from utils import json_output
+
+from . import app
 
 # this one is intended to be the boilerplate for api
 
@@ -41,3 +44,5 @@ def put_():
 @json_output
 def delete_():
     return {}
+
+app.register_blueprint(simple_page, url_prefix='/pages')

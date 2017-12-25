@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-import json
+import logging
 
 from webargs import fields
 from webargs.flaskparser import use_args
 from flask import Blueprint
 from utils import json_output
+from . import app
 
 # this one is intended to be the boilerplate for api
 
@@ -30,9 +31,11 @@ def get_id(args, pid):
 @json_output
 @use_args({'fat': fields.String(required=True)})
 def create_user_from_facebook(args):
-    from models.user import FacebookSSOMixin
-    result = FacebookSSOMixin.create_from_fat(args['fat'])
-    return json.dumps(result.content)
+    from models.user import User
+    user = User.from_fat(args['fat'])
+    if user:
+        logging.debug(user)
+        return user.to_dict()
 
 
 @user.route('/', methods=['PUT'])
@@ -45,3 +48,5 @@ def put_():
 @json_output
 def delete_():
     return {}
+
+app.register_blueprint(user, url_prefix='/users')

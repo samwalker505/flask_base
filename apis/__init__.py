@@ -7,8 +7,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from werkzeug.wsgi import DispatcherMiddleware
 from utils.errors import InvalidType
-from .api import simple_page
-from .user import user
+
 app = Flask(__name__)
 app.debug = True
 app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
@@ -16,9 +15,6 @@ app.config['APPLICATION_ROOT'] = '/api'
 app.url_map.strict_slashes = False
 jwt = JWTManager(app)
 CORS(app)
-
-app.register_blueprint(simple_page, url_prefix='/pages')
-app.register_blueprint(user, url_prefix='/users')
 
 
 def simple(env, resp):

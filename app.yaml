@@ -7,7 +7,7 @@ handlers:
   static_dir: static
 
 - url: /api/users.*
-  script: apis.app
+  script: apis.user.app
 
-- url: /
-  script: apis.app
+- url: /api/pages.*
+  script: apis.api.app
