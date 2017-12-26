@@ -35,7 +35,7 @@ def get_refresh_token():
 @user.route('/', methods=['GET'])
 @jwt_required
 @admin_only
-@use_args({'cursor': fields.String()})
+@use_args({'cursor': fields.String(), 'page_size': fields.Integer()})
 def get_users(args):
     return User.paginate(**args).to_dict()
 

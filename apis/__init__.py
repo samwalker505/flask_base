@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from datetime import timedelta
 from flask import jsonify
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
@@ -11,6 +11,7 @@ from utils.api import JSONFlask, CustomJSONEncoder
 app = JSONFlask(__name__)
 app.debug = True
 app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=8)
 app.config['APPLICATION_ROOT'] = '/api'
 app.json_encoder = CustomJSONEncoder
 app.url_map.strict_slashes = False
