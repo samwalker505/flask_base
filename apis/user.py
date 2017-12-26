@@ -11,7 +11,7 @@ from flask_jwt_extended import (create_access_token,
                                 get_current_user,
                                 jwt_refresh_token_required)
 
-from utils import json_output, output_exclude, admin_only
+from utils.api import admin_only
 from . import app
 from models.user import User
 
@@ -22,21 +22,32 @@ user = Blueprint('User', __name__,)
 
 @user.route('/access_token', methods=['GET'])
 @jwt_refresh_token_required
-@json_output
-def get_refresh_token():
+def get_access_token():
     return {'access_token': create_access_token(identity=get_current_user())}
+
+
+@user.route('/refresh_token', methods=['GET'])
+@jwt_refresh_token_required
+def get_refresh_token():
+    return {'refresh_token': create_refresh_token(identity=get_current_user())}
+
+
+@user.route('/', methods=['GET'])
+@jwt_required
+@admin_only
+@use_args({'cursor': fields.String()})
+def get_users(args):
+    return User.paginate(**args).to_dict()
 
 
 @user.route('/me', methods=['GET'])
 @jwt_required
-@json_output
 def get_profile():
     user = get_current_user()
     return user.to_dict()
 
 
 @user.route('/facebook', methods=['POST'])
-@json_output
 @use_args({'fat': fields.String(required=True)})
 def connect_user_from_facebook(args):
     user = User.from_fat(args['fat'])
@@ -52,13 +63,11 @@ def connect_user_from_facebook(args):
 
 
 @user.route('/', methods=['PUT'])
-@json_output
 def put_():
     return {}
 
 
 @user.route('/', methods=['DELETE'])
-@json_output
 def delete_():
     return {}
 

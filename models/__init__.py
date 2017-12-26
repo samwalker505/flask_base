@@ -3,6 +3,27 @@
 from google.appengine.ext import ndb
 
 
+class PaginateModel(object):
+
+    def __init__(self, results, next_cursor, prev_cursor, more):
+        self.results = results
+        self.next_cursor = next_cursor
+        self.prev_cursor = prev_cursor
+        self.more = more
+
+    def to_dict(self, *args, **kwargs):
+        p = {}
+        num_of_items = len(self.results)
+        p['num_of_items'] = num_of_items
+        p['next_cursor'] = self.next_cursor.urlsafe() if self.next_cursor else None
+        p['prev_cursor'] = self.prev_cursor.urlsafe() if self.prev_cursor else None
+        p['more'] = self.more
+
+        data = [r.to_dict() for r in self.results]
+
+        return {'pagination': p, 'data': data}
+
+
 class BaseModel(ndb.Model):
     ctime = ndb.DateTimeProperty(auto_now_add=True)
     mtime = ndb.DateTimeProperty(auto_now=True)
@@ -17,7 +38,20 @@ class BaseModel(ndb.Model):
             d = super(BaseModel, self).to_dict(exclude=kls.normal_filters(*args, **kwargs))
         else:
             d = super(BaseModel, self).to_dict(exclude=kls.public_filters(*args, **kwargs))
+        d['id'] = str(self.key.id())
+        d['urlsafe'] = self.key.urlsafe()
         return d
+
+    @classmethod
+    def paginate(cls, *args, **kwargs):
+        query = cls.build_query(*args, **kwargs)
+        op = {}
+        if 'cursor' in kwargs:
+            op['start_cursor'] = ndb.Cursor(urlsafe=kwargs['cursor'])
+        query_option = ndb.QueryOptions(**op)
+        page_size = kwargs['page_size'] if 'page_size' in kwargs else 15
+        results, cursor, more = query.fetch_page(page_size, options=query_option)
+        return PaginateModel(results, cursor, query_option.start_cursor, more)
 
     @classmethod
     def public_filters(cls, *args, **kwargs):

@@ -1,17 +1,18 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from flask import Flask, jsonify
+from flask import jsonify
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from werkzeug.wsgi import DispatcherMiddleware
 from utils.errors import InvalidType, ApiError
+from utils.api import JSONFlask, CustomJSONEncoder
 
-app = Flask(__name__)
+app = JSONFlask(__name__)
 app.debug = True
 app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
 app.config['APPLICATION_ROOT'] = '/api'
+app.json_encoder = CustomJSONEncoder
 app.url_map.strict_slashes = False
 jwt = JWTManager(app)
 CORS(app)

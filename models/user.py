@@ -76,6 +76,10 @@ class User(FacebookSSOMixin, BaseModel):
     def public_filters(cls):
         return ['blocked']
 
+    @classmethod
+    def build_query(cls, *args, **kwargs):
+        return cls.query().order(-cls.ctime)
+
 
 class Email(ndb.Model):
     user_key = ndb.KeyProperty()
