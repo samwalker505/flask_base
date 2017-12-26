@@ -49,19 +49,9 @@ def output_exclude(public_exclude=None, normal_exclude=None, admin_exclude=None)
                 logging.debug('is public')
                 fields = public_exclude or []
             r = func(*args, **kwargs)
-            if isinstance(r, dict):
-                for f_name in fields:
-                    if f_name in r:
-                        del r[f_name]
-                return r
-            elif isinstance(r, list):
-                new_list = []
-                for el in r:
-                    for f_name in fields:
-                        if f_name in el:
-                            del el[f_name]
-                    new_list.append(el)
-                return new_list
-
+            for f_name in fields:
+                if f_name in r:
+                    del r[f_name]
+            return r
         return _func
     return wrapper

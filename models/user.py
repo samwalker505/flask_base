@@ -64,7 +64,6 @@ class User(FacebookSSOMixin, BaseModel):
     fb_id = ndb.StringProperty()
     blocked = ndb.BooleanProperty(default=False)
     roles = UserRolesProperty(repeated=True)
-    PUBLIC_EXCLUDE = ['blocked']
 
     @property
     def is_admin(self):
@@ -72,6 +71,10 @@ class User(FacebookSSOMixin, BaseModel):
         logging.debug(self.roles)
         logging.debug(UserRolesProperty.ADMIN in self.roles)
         return UserRolesProperty.ADMIN in self.roles
+
+    @classmethod
+    def public_filters(cls):
+        return ['blocked']
 
 
 class Email(ndb.Model):

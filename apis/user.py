@@ -30,7 +30,7 @@ def get_refresh_token():
 @user.route('/me', methods=['GET'])
 @jwt_required
 @json_output
-def get_profile(args):
+def get_profile():
     user = get_current_user()
     return user.to_dict()
 
@@ -38,7 +38,6 @@ def get_profile(args):
 @user.route('/facebook', methods=['POST'])
 @json_output
 @use_args({'fat': fields.String(required=True)})
-@output_exclude(User.PUBLIC_EXCLUDE)
 def connect_user_from_facebook(args):
     user = User.from_fat(args['fat'])
     if user:
