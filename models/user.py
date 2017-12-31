@@ -44,11 +44,10 @@ class FacebookSSOMixin(object):
         else:
             user = User()
 
-        user.email = email
-        user.name = name
-        user.fb_id = fb_id
-        if not user.roles:
-            user.roles = [UserRolesProperty.NORMAL]
+        user.email = user.email or email
+        user.name = user.name or name
+        user.fb_id = user.fb_id or fb_id
+        user.roles = user.roles or [UserRolesProperty.NORMAL]
 
         user_key = user.put()
         if not email_log.user_key:
