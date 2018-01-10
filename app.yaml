@@ -3,11 +3,21 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /static
-  static_dir: static
 
 - url: /api/users.*
   script: apis.user.app
 
 - url: /api/pages.*
   script: apis.api.app
+
+# web files
+
+- url: /admin/dist/(.*)
+  static_files: admin/admin/dist/\1
+  upload: admin/admin/dist/(.*)
+
+# site root
+- url: /admin
+  static_files: admin/index.html
+  upload: admin/index.html
+  expiration: "15m"
