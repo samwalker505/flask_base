@@ -4,6 +4,9 @@ threadsafe: true
 
 handlers:
 
+- url: /api/resources.*
+  script: apis.resource.app
+
 - url: /api/users.*
   script: apis.user.app
 
@@ -21,3 +24,7 @@ handlers:
   static_files: admin/index.html
   upload: admin/index.html
   expiration: "15m"
+
+skip_files:
+  - ^env/.*
+  - ^(.*/)?.*/node_modules/.*$

@@ -49,7 +49,7 @@ class BaseModel(ndb.Model):
         if 'cursor' in kwargs:
             op['start_cursor'] = ndb.Cursor(urlsafe=kwargs['cursor'])
         query_option = ndb.QueryOptions(**op)
-        page_size = kwargs['page_size'] if 'page_size' in kwargs else 15
+        page_size = kwargs['per_page'] if 'per_page' in kwargs else 10
         results, cursor, more = query.fetch_page(page_size, options=query_option)
         return PaginateModel(results, cursor, query_option.start_cursor, more)
 

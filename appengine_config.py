@@ -3,8 +3,9 @@
 
 from google.appengine.ext import vendor
 import tempfile
+import utils.tempfile2
 
 # monkey patch for temp file
-tempfile.SpooledTemporaryFile = tempfile.TemporaryFile
+tempfile.SpooledTemporaryFile = utils.tempfile2.SpooledTemporaryFile
 # Add any libraries installed in the "lib" folder.
-vendor.add('env')
+vendor.add('lib')
