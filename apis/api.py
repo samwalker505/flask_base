@@ -6,7 +6,6 @@ from webargs.flaskparser import use_args
 from flask import Blueprint
 from utils import json_output
 
-from . import app
 
 # this one is intended to be the boilerplate for api
 

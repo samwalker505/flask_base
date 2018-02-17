@@ -8,7 +8,6 @@ from flask_jwt_extended import (jwt_required,
                                 jwt_optional,
                                 get_current_user)
 from utils import errors
-from . import app
 from models.resource import Image, Resource, ResourceType
 
 # this one is intended to be the boilerplate for api
@@ -33,6 +32,3 @@ def create_resource(res_type):
         return res.to_dict()
     else:
         raise errors.ApiError('NO_FILE_UPLOADED')
-
-
-app.register_blueprint(resource, url_prefix='/resources')

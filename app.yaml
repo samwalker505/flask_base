@@ -5,10 +5,10 @@ threadsafe: true
 handlers:
 
 - url: /api/resources.*
-  script: apis.resource.app
+  script: apis.app
 
 - url: /api/users.*
-  script: apis.user.app
+  script: apis.app
 
 - url: /api/pages.*
   script: apis.api.app

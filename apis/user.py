@@ -12,7 +12,6 @@ from flask_jwt_extended import (create_access_token,
                                 jwt_refresh_token_required)
 
 from utils.api import admin_only
-from . import app
 from models.user import User
 
 # this one is intended to be the boilerplate for api
@@ -70,5 +69,3 @@ def put_():
 @user.route('/', methods=['DELETE'])
 def delete_():
     return {}
-
-app.register_blueprint(user, url_prefix='/users')

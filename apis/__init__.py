@@ -72,3 +72,10 @@ def handle_unprocessable_entity(err):
     return jsonify({
         'messages': messages,
     }), 422
+
+from resource import resource
+from user import user
+
+
+app.register_blueprint(resource, url_prefix='/resources')
+app.register_blueprint(user, url_prefix='/users')
